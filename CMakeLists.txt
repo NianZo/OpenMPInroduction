@@ -19,3 +19,6 @@ add_subdirectory(IntegrateToPi)
 
 # Integrate 4 / (1+x^2) from 0 to 1 using OpenMP loop constructs and reductions
 add_subdirectory(IntegrateToPiWithLoops)
+
+# Exercise to fix buggy mandelbrot program
+add_subdirectory(MandelbrotDebug)
