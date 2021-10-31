@@ -22,3 +22,6 @@ add_subdirectory(IntegrateToPiWithLoops)
 
 # Exercise to fix buggy mandelbrot program
 add_subdirectory(MandelbrotDebug)
+
+# Exercise to parallelize linked list traversal
+add_subdirectory(LinkedListTraversal)
