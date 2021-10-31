@@ -16,3 +16,6 @@ add_subdirectory(HelloWorld)
 
 # Integrate 4 / (1+x^2) from 0 to 1
 add_subdirectory(IntegrateToPi)
+
+# Integrate 4 / (1+x^2) from 0 to 1 using OpenMP loop constructs and reductions
+add_subdirectory(IntegrateToPiWithLoops)
