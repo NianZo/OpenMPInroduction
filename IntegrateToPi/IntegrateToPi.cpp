@@ -25,11 +25,17 @@ int main()
 	assert(NUM_STEPS % omp_get_num_threads() == 0); // For simplicity I am assuming that numThreads evenly divides NUM_STEPS
 
 	const double startTime = omp_get_wtime();
+	int actualThreadCount;
 #pragma omp parallel
 	{
 		double localSum = 0.0;
+
 		const uint32_t stepsPerThread = static_cast<uint32_t>(NUM_STEPS / omp_get_num_threads());
 		const uint32_t threadId = static_cast<uint32_t>(omp_get_thread_num());
+		if (threadId == 0)
+		{
+			actualThreadCount = omp_get_num_threads();
+		}
 		for (uint i = threadId * stepsPerThread; i < (threadId + 1) * stepsPerThread; i++)
 		{
 			const double x = (i + 0.5) * step;
@@ -37,7 +43,7 @@ int main()
 		}
 		sum[threadId] = localSum;
 	}
-	double finalSum = std::accumulate(sum.begin(), sum.end(), 0.0);
+	double finalSum = std::accumulate(sum.begin(), sum.begin() + actualThreadCount, 0.0);
 	const double endTime = omp_get_wtime();
 	const double pi = step * finalSum;
 	std::cout << "Integral value: " << pi << std::endl;
