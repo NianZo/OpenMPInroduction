@@ -23,6 +23,7 @@ int main()
 	constexpr double step = 1.0 / static_cast<double>(NUM_STEPS);
 
 	assert(NUM_STEPS % omp_get_num_threads() == 0); // For simplicity I am assuming that numThreads evenly divides NUM_STEPS
+	// Note: can't static assert because omp_get_num_threads() isn't known at compile time
 
 	const double startTime = omp_get_wtime();
 #pragma omp parallel
