@@ -12,8 +12,8 @@
 #include <array>
 #include <numeric>
 
-constexpr long NUM_STEPS = 100000;
-constexpr int NUM_THREADS = 16;
+constexpr long NUM_STEPS = 1000000000;
+constexpr int NUM_THREADS = 8;
 
 int main()
 {
