@@ -13,3 +13,6 @@ set_project_warnings(project_warnings)
 
 # Hello world application
 add_subdirectory(HelloWorld)
+
+# Integrate 4 / (1+x^2) from 0 to 1
+add_subdirectory(IntegrateToPi)
