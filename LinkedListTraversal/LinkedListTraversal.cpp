@@ -7,10 +7,10 @@
 #include <omp.h>
 
 #ifndef N
-#define N 5
+#define N 5 // Number of nodes
 #endif
 #ifndef FS
-#define FS 38
+#define FS 38 // 'Fib-start'
 #endif
 
 struct node {
@@ -46,7 +46,7 @@ struct node* init_list(struct node* p) {
     p = head;
     p->data = FS;
     p->fibdata = 0;
-    for (i=0; i< N; i++) {
+    for (i=0; i< N-1; i++) {
        temp  =  (struct node*)malloc(sizeof(struct node));
        p->next = temp;
        p = temp;
@@ -70,12 +70,20 @@ int main(int argc, char *argv[]) {
      p = init_list(p);
      head = p;
 
+     omp_set_num_threads(5);
+
      start = omp_get_wtime();
+     //[[ omp :: directive(parallel for num_threads(N) firstprivate(head) private(p))]] // compiler warns that this is ignored, and threads are not forked with this style
+#pragma omp parallel for firstprivate(head) private(p)
+	 for (int i = 0; i < N; i++)
      {
-        while (p != NULL) {
-		   processwork(p);
-		   p = p->next;
-        }
+    	 // Determine our current node by traversing threadId times
+		 p = head;
+		 for (int j = 0; j < i; j++)
+		 {
+			 p = p->next;
+		 }
+		 processwork(p);
      }
 
      end = omp_get_wtime();
@@ -89,6 +97,7 @@ int main(int argc, char *argv[]) {
 	 free (p);
 
      printf("Compute Time: %f seconds\n", end - start);
+     // NOTE: the original program has a bug where it actually makes 6 nodes and calculates fib for all 6 of them
 
      return 0;
 }
