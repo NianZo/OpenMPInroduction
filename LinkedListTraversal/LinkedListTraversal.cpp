@@ -73,17 +73,21 @@ int main(int argc, char *argv[]) {
      omp_set_num_threads(5);
 
      start = omp_get_wtime();
-     //[[ omp :: directive(parallel for num_threads(N) firstprivate(head) private(p))]] // compiler warns that this is ignored, and threads are not forked with this style
-#pragma omp parallel for firstprivate(head) private(p)
-	 for (int i = 0; i < N; i++)
+
+#pragma omp parallel
      {
-    	 // Determine our current node by traversing threadId times
-		 p = head;
-		 for (int j = 0; j < i; j++)
-		 {
-			 p = p->next;
-		 }
-		 processwork(p);
+#pragma omp single
+    	 {
+    	     while (p != NULL) {
+#pragma omp task firstprivate(p)
+    	    	 {
+    	    		 processwork(p);
+    	    	 }
+
+    			   p = p->next;
+    	     }
+    	 }
+
      }
 
      end = omp_get_wtime();
