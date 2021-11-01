@@ -25,3 +25,6 @@ add_subdirectory(MandelbrotDebug)
 
 # Exercise to parallelize linked list traversal
 add_subdirectory(LinkedListTraversal)
+
+# Exercise to use flushes for a producer-consumer problem
+add_subdirectory(ProducerConsumer)
