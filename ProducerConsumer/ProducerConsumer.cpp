@@ -18,7 +18,7 @@
 #endif
 #include <stdio.h>
 
-#define N        10000
+#define N        100000000
 
 /* Some random number constants from numerical recipies */
 #define SEED       2531
@@ -49,15 +49,42 @@ int main()
 {
   double *A, sum, runtime;
   int flag = 0;
+  int flag_tmp;
 
   A = (double *)malloc(N*sizeof(double));
 
   runtime = omp_get_wtime();
+  // This is the example given for flushes. The flushes make sense, but this isn't the best parallel example
+  // This is essentially serial because fill_rand and Sum_array have to run atomically in this case
+  // Also, I think flag could just be volatile
+  // To fit current implementation, I think the fastest would be to just parallelize Sum_array (fill_rand implementation is inherently serial)
+#pragma omp parallel sections
+  {
+#pragma omp section
+	  {
+		  fill_rand(N, A);        // Producer: fill an array of data
+#pragma omp flush
+#pragma omp atomic write
+		  flag = 1;
+#pragma omp flush (flag)
+	  }
+#pragma omp section
+	  {
+#pragma omp flush(flag)
+		  while (1)
+		  {
+#pragma omp flush (flag)
+#pragma omp atomic read
+			  flag_tmp = flag;
+			  if (flag_tmp==1) break;
+		  }
+#pragma omp flush
+		  sum = Sum_array(N, A);  // Consumer: sum the array
+	  }
 
-  fill_rand(N, A);        // Producer: fill an array of data
 
-  sum = Sum_array(N, A);  // Consumer: sum the array
 
+  }
   runtime = omp_get_wtime() - runtime;
 
   printf(" In %f seconds, The sum is %f \n",runtime,sum);
