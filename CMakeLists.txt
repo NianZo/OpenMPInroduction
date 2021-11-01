@@ -28,3 +28,6 @@ add_subdirectory(LinkedListTraversal)
 
 # Exercise to use flushes for a producer-consumer problem
 add_subdirectory(ProducerConsumer)
+
+# Exercist to parallelize an algorithm across an immutable API boundary
+add_subdirectory(PiMonteCarlo)
